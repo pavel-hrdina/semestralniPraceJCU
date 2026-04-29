@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <span class="navbar-brand">Admin Panel</span>
+            <a href="index.html" class="btn btn-outline-light">Public View</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="loginSection">
+            <h2>Login</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <input id="username" class="form-control mb-2" placeholder="Username">
+                    <input id="password" type="password" class="form-control mb-2" placeholder="Password">
+                    <button class="btn btn-primary" onclick="login()">Login</button>
+                    <p id="loginError" class="text-danger mt-2"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminSection" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Manage Products</h2>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 id="formTitle">Add Product</h5>
+                    <input id="name" class="form-control mb-2" placeholder="Name">
+                    <input id="price" type="number" class="form-control mb-2" placeholder="Price">
+                    <textarea id="description" class="form-control mb-2" placeholder="Description"></textarea>
+                    <button id="submitBtn" class="btn btn-success" onclick="saveProduct()">Add</button>
+                    <button id="cancelBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;">Cancel</button>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
