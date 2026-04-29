@@ -13,7 +13,7 @@ async function loadProducts() {
     const container = document.getElementById('products');
 
     if (products.length === 0) {
-        container.innerHTML = '<p>No products available.</p>';
+        container.innerHTML = '<p>Žádné produkty nejsou k dispozici.</p>';
         return;
     }
 
@@ -23,7 +23,7 @@ async function loadProducts() {
                 <div class="card-body">
                     <h5 class="card-title">${escapeHtml(p.name)}</h5>
                     <p class="card-text">${escapeHtml(p.description)}</p>
-                    <p class="card-text"><strong>${escapeHtml(p.price)} CZK</strong></p>
+                    <p class="card-text"><strong>${escapeHtml(p.price)} Kč</strong></p>
                 </div>
             </div>
         </div>

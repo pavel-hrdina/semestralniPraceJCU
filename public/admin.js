@@ -30,9 +30,9 @@ async function login() {
         errorEl.textContent = '';
         showAdmin();
     } else if (response.status === 429) {
-        errorEl.textContent = 'Too many attempts, try later';
+        errorEl.textContent = 'Příliš mnoho pokusů, zkus to později';
     } else {
-        errorEl.textContent = 'Invalid credentials';
+        errorEl.textContent = 'Neplatné přihlašovací údaje';
     }
 }
 
@@ -65,8 +65,8 @@ async function loadProducts() {
             <td>${escapeHtml(p.price)}</td>
             <td>${escapeHtml(p.description)}</td>
             <td>
-                <button class="btn btn-sm btn-warning" onclick="editProduct('${escapeHtml(p.id)}')">Edit</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${escapeHtml(p.id)}')">Delete</button>
+                <button class="btn btn-sm btn-warning" onclick="editProduct('${escapeHtml(p.id)}')">Upravit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${escapeHtml(p.id)}')">Smazat</button>
             </td>
         </tr>
     `).join('');
@@ -98,7 +98,7 @@ async function saveProduct() {
         logout();
     } else {
         const err = await response.json();
-        alert(err.error || 'Error');
+        alert(err.error || 'Chyba');
     }
 }
 
@@ -111,8 +111,8 @@ async function editProduct(id) {
     document.getElementById('description').value = product.description;
 
     editingId = id;
-    document.getElementById('formTitle').textContent = 'Edit Product';
-    document.getElementById('submitBtn').textContent = 'Save';
+    document.getElementById('formTitle').textContent = 'Upravit produkt';
+    document.getElementById('submitBtn').textContent = 'Uložit';
     document.getElementById('cancelBtn').style.display = 'inline-block';
 }
 
@@ -125,13 +125,13 @@ function clearForm() {
     document.getElementById('price').value = '';
     document.getElementById('description').value = '';
     editingId = null;
-    document.getElementById('formTitle').textContent = 'Add Product';
-    document.getElementById('submitBtn').textContent = 'Add';
+    document.getElementById('formTitle').textContent = 'Přidat produkt';
+    document.getElementById('submitBtn').textContent = 'Přidat';
     document.getElementById('cancelBtn').style.display = 'none';
 }
 
 async function deleteProduct(id) {
-    if (!confirm('Delete this product?')) return;
+    if (!confirm('Opravdu smazat tento produkt?')) return;
 
     const response = await fetch(`/api/products/${id}`, {
         method: 'DELETE',

@@ -9,7 +9,7 @@
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
             <span class="navbar-brand">Admin Panel</span>
-            <a href="index.html" class="btn btn-outline-light">Public View</a>
+            <a href="index.html" class="btn btn-outline-light">Veřejný pohled</a>
         </div>
     </nav>
 
@@ -20,7 +20,7 @@
                 <div class="col-md-4">
                     <input id="username" class="form-control mb-2" placeholder="Username">
                     <input id="password" type="password" class="form-control mb-2" placeholder="Password">
-                    <button class="btn btn-primary" onclick="login()">Login</button>
+                    <button class="btn btn-primary" onclick="login()">Přihlásit se</button>
                     <p id="loginError" class="text-danger mt-2"></p>
                 </div>
             </div>
@@ -28,28 +28,28 @@
 
         <div id="adminSection" style="display:none;">
             <div class="d-flex justify-content-between align-items-center">
-                <h2>Manage Products</h2>
-                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                <h2>Spravovat produkty</h2>
+                <button class="btn btn-secondary" onclick="logout()">Odhlásit se</button>
             </div>
 
             <div class="card my-3">
                 <div class="card-body">
-                    <h5 id="formTitle">Add Product</h5>
-                    <input id="name" class="form-control mb-2" placeholder="Name">
-                    <input id="price" type="number" class="form-control mb-2" placeholder="Price">
-                    <textarea id="description" class="form-control mb-2" placeholder="Description"></textarea>
-                    <button id="submitBtn" class="btn btn-success" onclick="saveProduct()">Add</button>
-                    <button id="cancelBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;">Cancel</button>
+                    <h5 id="formTitle">Přidat produkt</h5>
+                    <input id="name" class="form-control mb-2" placeholder="Jméno">
+                    <input id="price" type="number" class="form-control mb-2" placeholder="Cena">
+                    <textarea id="description" class="form-control mb-2" placeholder="Popis"></textarea>
+                    <button id="submitBtn" class="btn btn-success" onclick="saveProduct()">Přidat</button>
+                    <button id="cancelBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;">Zrušit</button>
                 </div>
             </div>
 
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Description</th>
-                        <th>Actions</th>
+                        <th>Jméno</th>
+                        <th>Cena</th>
+                        <th>Popis</th>
+                        <th>Akce</th>
                     </tr>
                 </thead>
                 <tbody id="productsTable"></tbody>

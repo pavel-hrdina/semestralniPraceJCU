@@ -30,13 +30,13 @@ app.use(express.static('public'));
 
 function validateProduct(body) {
     if (typeof body.name !== 'string' || body.name.trim().length === 0 || body.name.length > 100) {
-        return 'Invalid name';
+        return 'Neplatný název';
     }
     if (typeof body.price !== 'number' || !Number.isFinite(body.price) || body.price < 0) {
-        return 'Invalid price';
+        return 'Neplatná cena';
     }
     if (typeof body.description !== 'string' || body.description.length > 1000) {
-        return 'Invalid description';
+        return 'Neplatný popis';
     }
     return null;
 }
@@ -46,7 +46,7 @@ function rateLimitLogin(req, res, next) {
     const now = Date.now();
     const recent = (loginAttempts.get(ip) || []).filter(t => now - t < LOGIN_WINDOW_MS);
     if (recent.length >= MAX_LOGIN_ATTEMPTS) {
-        return res.status(429).json({ error: 'Too many attempts, try later' });
+        return res.status(429).json({ error: 'Příliš mnoho pokusů, zkus to později' });
     }
     recent.push(now);
     loginAttempts.set(ip, recent);
@@ -58,7 +58,7 @@ function requireAdmin(req, res, next) {
     const expiry = activeTokens.get(token);
     if (!expiry || expiry < Date.now()) {
         activeTokens.delete(token);
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Neautorizován' });
     }
     next();
 }
@@ -70,7 +70,7 @@ app.post('/api/login', rateLimitLogin, (req, res) => {
         activeTokens.set(token, Date.now() + TOKEN_TTL);
         return res.json({ token });
     }
-    res.status(401).json({ error: 'Invalid credentials' });
+    res.status(401).json({ error: 'Neplatné přihlašovací údaje' });
 });
 
 app.post('/api/logout', requireAdmin, (req, res) => {
@@ -86,7 +86,7 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/:id', async (req, res) => {
     const doc = await productsCollection.doc(req.params.id).get();
-    if (!doc.exists) return res.status(404).json({ error: 'Not found' });
+    if (!doc.exists) return res.status(404).json({ error: 'Nenalezeno' });
     res.json({ id: doc.id, ...doc.data() });
 });
 
@@ -109,7 +109,7 @@ app.put('/api/products/:id', requireAdmin, async (req, res) => {
 
     const docRef = productsCollection.doc(req.params.id);
     const doc = await docRef.get();
-    if (!doc.exists) return res.status(404).json({ error: 'Not found' });
+    if (!doc.exists) return res.status(404).json({ error: 'Nenalezeno' });
 
     const updated = {
         name: req.body.name,
@@ -123,7 +123,7 @@ app.put('/api/products/:id', requireAdmin, async (req, res) => {
 app.delete('/api/products/:id', requireAdmin, async (req, res) => {
     const docRef = productsCollection.doc(req.params.id);
     const doc = await docRef.get();
-    if (!doc.exists) return res.status(404).json({ error: 'Not found' });
+    if (!doc.exists) return res.status(404).json({ error: 'Nenalezeno' });
 
     await docRef.delete();
     res.json({ success: true });
