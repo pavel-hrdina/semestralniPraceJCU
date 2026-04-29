@@ -1,14 +1,23 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
+const admin = require('firebase-admin');
+
+const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+    : require('./firebase-key.json');
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
+const db = admin.firestore();
+const productsCollection = db.collection('products');
 
 const app = express();
 const PORT = 3000;
-const DATA_FILE = path.join(__dirname, 'data', 'products.json');
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const TOKEN_TTL = 60 * 60 * 1000;
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
@@ -18,14 +27,6 @@ const loginAttempts = new Map();
 
 app.use(express.json({ limit: '10kb' }));
 app.use(express.static('public'));
-
-function readProducts() {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-}
-
-function writeProducts(products) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(products, null, 2));
-}
 
 function validateProduct(body) {
     if (typeof body.name !== 'string' || body.name.trim().length === 0 || body.name.length > 100) {
@@ -77,56 +78,54 @@ app.post('/api/logout', requireAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-app.get('/api/products', (req, res) => {
-    res.json(readProducts());
+app.get('/api/products', async (req, res) => {
+    const snapshot = await productsCollection.get();
+    const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(products);
 });
 
-app.get('/api/products/:id', (req, res) => {
-    const product = readProducts().find(p => p.id === req.params.id);
-    if (!product) return res.status(404).json({ error: 'Not found' });
-    res.json(product);
+app.get('/api/products/:id', async (req, res) => {
+    const doc = await productsCollection.doc(req.params.id).get();
+    if (!doc.exists) return res.status(404).json({ error: 'Not found' });
+    res.json({ id: doc.id, ...doc.data() });
 });
 
-app.post('/api/products', requireAdmin, (req, res) => {
+app.post('/api/products', requireAdmin, async (req, res) => {
     const error = validateProduct(req.body);
     if (error) return res.status(400).json({ error });
 
-    const products = readProducts();
     const newProduct = {
-        id: Date.now().toString(),
         name: req.body.name,
         price: req.body.price,
         description: req.body.description
     };
-    products.push(newProduct);
-    writeProducts(products);
-    res.status(201).json(newProduct);
+    const docRef = await productsCollection.add(newProduct);
+    res.status(201).json({ id: docRef.id, ...newProduct });
 });
 
-app.put('/api/products/:id', requireAdmin, (req, res) => {
+app.put('/api/products/:id', requireAdmin, async (req, res) => {
     const error = validateProduct(req.body);
     if (error) return res.status(400).json({ error });
 
-    const products = readProducts();
-    const index = products.findIndex(p => p.id === req.params.id);
-    if (index === -1) return res.status(404).json({ error: 'Not found' });
-    products[index] = {
-        id: products[index].id,
+    const docRef = productsCollection.doc(req.params.id);
+    const doc = await docRef.get();
+    if (!doc.exists) return res.status(404).json({ error: 'Not found' });
+
+    const updated = {
         name: req.body.name,
         price: req.body.price,
         description: req.body.description
     };
-    writeProducts(products);
-    res.json(products[index]);
+    await docRef.update(updated);
+    res.json({ id: req.params.id, ...updated });
 });
 
-app.delete('/api/products/:id', requireAdmin, (req, res) => {
-    const products = readProducts();
-    const filtered = products.filter(p => p.id !== req.params.id);
-    if (filtered.length === products.length) {
-        return res.status(404).json({ error: 'Not found' });
-    }
-    writeProducts(filtered);
+app.delete('/api/products/:id', requireAdmin, async (req, res) => {
+    const docRef = productsCollection.doc(req.params.id);
+    const doc = await docRef.get();
+    if (!doc.exists) return res.status(404).json({ error: 'Not found' });
+
+    await docRef.delete();
     res.json({ success: true });
 });
 

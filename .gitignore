@@ -1,0 +1,71 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.swp
+*~ 
+*.bak
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials
+secrets.yml
+
+# Node
+node_modules/
+dist/
+build/
+.next/
+out/
+.cache/
+.vite/
+*.tgz
+
+# Editor directories and files
+.vscode/
+.history/
+*.code-workspace
+*.sublime-workspace
+*.sublime-project
+
+# Dev containers and Codespaces
+.devcontainer/
+.codespaces/
+.github/codespaces/*
+
+# Docker
+docker-compose.override.yml
+.env.*.local
+**/Dockerfile.*.local
+*.dockerignore
+
+# Build artifacts / packaging
+dist/
+coverage/
+.coverage
+coverage.xml
+*.egg-info/
+pip-wheel-metadata/
+wheelhouse/
+
+# Misc
+*.sqlite
+*.db
+*.bak
+*.swp
+*.lock
