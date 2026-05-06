@@ -6,7 +6,7 @@ Webová aplikace mini e-shopu. Veřejná část obsahuje katalog produktů s ná
 admin sekce umožňuje správu produktů včetně obrázků (CRUD).
 
 **Backend:** Node.js + Express
-**Persistence:** Firebase Firestore (cloudová NoSQL databáze)
+**Persistence:** Firebase Firestore
 **Frontend:** HTML + Bootstrap 5 + JavaScript (bez frameworku)
 **Testy:** Jest + Supertest
 
