@@ -13,6 +13,7 @@ admin sekce umožňuje správu produktů včetně obrázků (CRUD).
 ## Funkce
 
 ### Pro návštěvníky
+
 - Katalog produktů s obrázky, popisy a cenami
 - Přidávání do košíku přímo z katalogu
 - Košík uložený v `localStorage` prohlížeče
@@ -20,6 +21,7 @@ admin sekce umožňuje správu produktů včetně obrázků (CRUD).
 - Dokončení objednávky (vyprázdní košík)
 
 ### Pro admina
+
 - Přihlášení jménem a heslem
 - Vytvoření, editace a mazání produktů
 - Nahrávání obrázků k produktům (max 600 KB, formát JPG / PNG / WebP)
