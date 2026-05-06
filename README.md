@@ -1,5 +1,7 @@
 # Semestrální projekt - Katalog produktů s košíkem
 
+![CI](https://github.com/pavel-hrdina/semestralniPraceJCU/actions/workflows/test.yml/badge.svg)
+
 Webová aplikace mini e-shopu. Veřejná část obsahuje katalog produktů s nákupním košíkem,
 admin sekce umožňuje správu produktů včetně obrázků (CRUD).
 
@@ -46,12 +48,6 @@ Pokrývají autentizaci, validaci vstupů a CRUD operace - dohromady 16 testů v
  
 Projekt má GitHub Actions workflow v `.github/workflows/test.yml`,
 který automaticky spouští testy při každém pushi do `main` a u každého pull requestu.
- 
-Workflow nepotřebuje žádné secrets - testy běží proti mocku, takže k Firebase se nepřipojuje.
- 
-Status badge můžeš přidat na začátek README:
- 
-![CI](https://github.com/pavel-hrdina/semestralniPraceJCU/actions/workflows/test.yml/badge.svg)
 
 ## Struktura projektu
 
