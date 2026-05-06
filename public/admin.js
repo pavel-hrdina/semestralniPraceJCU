@@ -3,9 +3,17 @@ let currentImage = '';
 
 const MAX_IMAGE_BYTES = 600 * 1024;
 
+
+/**
+ * Převede nebezpečné HTML znaky na bezpečné entity.
+ * Slouží jako prevence proti XSS útokům při výpisu uživatelského textu.
+ * 
+ * @param {string} str - Textový řetězec k ošetření
+ * @returns {string} Ošetřený řetězec s HTML entitami
+ */
 function escapeHtml(str) {
     return String(str)
-        .replace(/&/g, '&amp;')
+        .replace(/&/g, '&amp;') 
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
@@ -27,6 +35,7 @@ async function login() {
     });
 
     const errorEl = document.getElementById('loginError');
+
     if (response.ok) {
         const data = await response.json();
         localStorage.setItem('adminToken', data.token);
