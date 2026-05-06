@@ -84,7 +84,7 @@ app.post('/api/login', rateLimitLogin, (req, res) => {
         activeTokens.set(token, Date.now() + TOKEN_TTL);
         return res.json({ token });
     }
-    
+
     res.status(401).json({ error: 'Neplatné přihlašovací údaje' });
 });
 
@@ -115,6 +115,7 @@ app.post('/api/products', requireAdmin, async (req, res) => {
         description: req.body.description,
         image: req.body.image || ''
     };
+
     const docRef = await productsCollection.add(newProduct);
     res.status(201).json({ id: docRef.id, ...newProduct });
 });
@@ -133,6 +134,7 @@ app.put('/api/products/:id', requireAdmin, async (req, res) => {
         description: req.body.description,
         image: req.body.image || ''
     };
+
     await docRef.update(updated);
     res.json({ id: req.params.id, ...updated });
 });
@@ -141,7 +143,6 @@ app.delete('/api/products/:id', requireAdmin, async (req, res) => {
     const docRef = productsCollection.doc(req.params.id);
     const doc = await docRef.get();
     if (!doc.exists) return res.status(404).json({ error: 'Not found' });
-
     await docRef.delete();
     res.json({ success: true });
 });
