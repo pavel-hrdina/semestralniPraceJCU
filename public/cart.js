@@ -119,12 +119,38 @@ function clearCart() {
     loadCart();
 }
 
-function placeOrder() {
+async function placeOrder() {
+    const cart = getCart();
+    if (Object.keys(cart).length === 0) return;
     if (!confirm('Dokončit objednávku?')) return;
-    alert('Děkujeme za objednávku!');
-    saveCart({});
-    updateCartCount();
-    loadCart();
+
+    const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart })
+    });
+
+    if (response.ok) {
+        alert('Děkujeme za objednávku!');
+        saveCart({});
+        updateCartCount();
+        loadCart();
+        return;
+    }
+
+    if (response.status === 429) {
+        alert('Příliš mnoho objednávek z této IP, zkus to za chvíli.');
+        return;
+    }
+
+    if (response.status === 409) {
+        alert('Některé produkty mezitím přestaly být dostupné. Košík byl aktualizován.');
+        loadCart();
+        return;
+    }
+
+    const err = await response.json();
+    alert(err.error || 'Objednávku se nepodařilo dokončit');
 }
 
 updateCartCount();
