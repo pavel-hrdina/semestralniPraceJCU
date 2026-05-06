@@ -1,4 +1,7 @@
 let editingId = null;
+let currentImage = '';
+
+const MAX_IMAGE_BYTES = 600 * 1024;
 
 function escapeHtml(str) {
     return String(str)
@@ -61,6 +64,7 @@ async function loadProducts() {
 
     tbody.innerHTML = products.map(p => `
         <tr>
+            <td>${p.image ? `<img src="${escapeHtml(p.image)}" style="height: 50px;">` : '—'}</td>
             <td>${escapeHtml(p.name)}</td>
             <td>${escapeHtml(p.price)}</td>
             <td>${escapeHtml(p.description)}</td>
@@ -72,11 +76,41 @@ async function loadProducts() {
     `).join('');
 }
 
+function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.size > MAX_IMAGE_BYTES) {
+        alert('Obrázek je příliš velký. Maximum je 600 KB.');
+        event.target.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        currentImage = e.target.result;
+        showPreview(currentImage);
+    };
+    reader.readAsDataURL(file);
+}
+
+function showPreview(dataUrl) {
+    document.getElementById('previewImg').src = dataUrl;
+    document.getElementById('imagePreview').style.display = 'block';
+}
+
+function removeImage() {
+    currentImage = '';
+    document.getElementById('imageFile').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+}
+
 async function saveProduct() {
     const product = {
         name: document.getElementById('name').value,
         price: Number(document.getElementById('price').value),
-        description: document.getElementById('description').value
+        description: document.getElementById('description').value,
+        image: currentImage
     };
 
     const url = editingId ? `/api/products/${editingId}` : '/api/products';
@@ -110,6 +144,13 @@ async function editProduct(id) {
     document.getElementById('price').value = product.price;
     document.getElementById('description').value = product.description;
 
+    currentImage = product.image || '';
+    if (currentImage) {
+        showPreview(currentImage);
+    } else {
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+
     editingId = id;
     document.getElementById('formTitle').textContent = 'Upravit produkt';
     document.getElementById('submitBtn').textContent = 'Uložit';
@@ -124,6 +165,9 @@ function clearForm() {
     document.getElementById('name').value = '';
     document.getElementById('price').value = '';
     document.getElementById('description').value = '';
+    document.getElementById('imageFile').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+    currentImage = '';
     editingId = null;
     document.getElementById('formTitle').textContent = 'Přidat produkt';
     document.getElementById('submitBtn').textContent = 'Přidat';

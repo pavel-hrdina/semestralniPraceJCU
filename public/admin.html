@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Admin</title>
+    <title>Administrace</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
-            <span class="navbar-brand">Admin Panel</span>
+            <span class="navbar-brand">Administrace</span>
             <a href="index.html" class="btn btn-outline-light">Veřejný pohled</a>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div id="loginSection">
-            <h2>Login</h2>
+            <h2>Přihlášení</h2>
             <div class="row">
                 <div class="col-md-4">
-                    <input id="username" class="form-control mb-2" placeholder="Username">
-                    <input id="password" type="password" class="form-control mb-2" placeholder="Password">
-                    <button class="btn btn-primary" onclick="login()">Přihlásit se</button>
+                    <input id="username" class="form-control mb-2" placeholder="Uživatelské jméno">
+                    <input id="password" type="password" class="form-control mb-2" placeholder="Heslo">
+                    <button class="btn btn-primary" onclick="login()">Přihlásit</button>
                     <p id="loginError" class="text-danger mt-2"></p>
                 </div>
             </div>
@@ -28,25 +28,34 @@
 
         <div id="adminSection" style="display:none;">
             <div class="d-flex justify-content-between align-items-center">
-                <h2>Spravovat produkty</h2>
-                <button class="btn btn-secondary" onclick="logout()">Odhlásit se</button>
+                <h2>Správa produktů</h2>
+                <button class="btn btn-secondary" onclick="logout()">Odhlásit</button>
             </div>
 
             <div class="card my-3">
                 <div class="card-body">
                     <h5 id="formTitle">Přidat produkt</h5>
-                    <input id="name" class="form-control mb-2" placeholder="Jméno">
+                    <input id="name" class="form-control mb-2" placeholder="Název">
                     <input id="price" type="number" class="form-control mb-2" placeholder="Cena">
                     <textarea id="description" class="form-control mb-2" placeholder="Popis"></textarea>
+
+                    <label class="form-label mt-2">Obrázek (volitelné, max 600 KB)</label>
+                    <input id="imageFile" type="file" accept="image/*" class="form-control mb-2" onchange="handleImageSelect(event)">
+                    <div id="imagePreview" class="mb-2" style="display:none;">
+                        <img id="previewImg" style="max-height: 150px; border: 1px solid #ddd; border-radius: 4px;">
+                        <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeImage()">Odstranit obrázek</button>
+                    </div>
+
                     <button id="submitBtn" class="btn btn-success" onclick="saveProduct()">Přidat</button>
                     <button id="cancelBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;">Zrušit</button>
                 </div>
             </div>
 
-            <table class="table">
+            <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th>Jméno</th>
+                        <th>Obrázek</th>
+                        <th>Název</th>
                         <th>Cena</th>
                         <th>Popis</th>
                         <th>Akce</th>
