@@ -54,9 +54,11 @@ function rateLimitLogin(req, res, next) {
     const ip = req.ip;
     const now = Date.now();
     const recent = (loginAttempts.get(ip) || []).filter(t => now - t < LOGIN_WINDOW_MS);
+
     if (recent.length >= MAX_LOGIN_ATTEMPTS) {
         return res.status(429).json({ error: 'Příliš mnoho pokusů, zkus to později' });
     }
+
     recent.push(now);
     loginAttempts.set(ip, recent);
     next();
@@ -65,20 +67,24 @@ function rateLimitLogin(req, res, next) {
 function requireAdmin(req, res, next) {
     const token = req.headers.authorization;
     const expiry = activeTokens.get(token);
+
     if (!expiry || expiry < Date.now()) {
         activeTokens.delete(token);
         return res.status(401).json({ error: 'Unauthorized' });
     }
+
     next();
 }
 
 app.post('/api/login', rateLimitLogin, (req, res) => {
     const { username, password } = req.body;
+
     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
         const token = crypto.randomBytes(32).toString('hex');
         activeTokens.set(token, Date.now() + TOKEN_TTL);
         return res.json({ token });
     }
+    
     res.status(401).json({ error: 'Neplatné přihlašovací údaje' });
 });
 
@@ -140,6 +146,15 @@ app.delete('/api/products/:id', requireAdmin, async (req, res) => {
     res.json({ success: true });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server běží na http://localhost:${PORT}`);
-});
+function resetState() {
+    activeTokens.clear();
+    loginAttempts.clear();
+}
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server běží na http://localhost:${PORT}`);
+    });
+}
+
+module.exports = { app, resetState };
